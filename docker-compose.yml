@@ -4,15 +4,15 @@ services:
     container_name: db-app
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: databse
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql #inicia la db
       - db-data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "${HOST_DB_PORT}:${CONTAINER_DB_PORT}"
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "-proot"]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "${DB_USERNAME}", "-p${DB_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -24,13 +24,13 @@ services:
     container_name: backend-app
     restart: always
     environment:
-      DB_USERNAME: root
-      DB_PASSWORD: root
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
       DB_HOST: db # Nombre del servicio de la DB
-      DB_PORT: 3306
-      DB_DATABASE: databse
+      DB_PORT: ${CONTAINER_DB_PORT} #contenedor
+      DB_DATABASE: ${DB_DATABASE}
     ports:
-      - "8080:8080"
+      - "${BACKEND_HOST_PORT}:${BACKEND_CONTAINER_PORT}"
     depends_on:
       db:
         condition: service_healthy # Espera hasta que el servicio de la DB esté "healthy"
@@ -41,7 +41,7 @@ services:
       context: ./frontend
     container_name: frontend-app
     ports:
-      - "5173:5173"
+      - "${FRONTEND_HOST_PORT}:${FRONTEND_CONTAINER_PORT}"
     depends_on:
     - backend
 

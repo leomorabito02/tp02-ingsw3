@@ -13,4 +13,4 @@ CREATE TABLE IF NOT EXISTS test (
 
 INSERT INTO test (message) VALUES ('Hello World');
 
-COMMIT
+COMMIT;

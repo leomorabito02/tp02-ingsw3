@@ -13,7 +13,6 @@ RUN npm install
 # Esto se hace después de la instalación para que Docker no invalide el caché de la capa RUN si solo cambiaste un archivo de tu proyecto.
 COPY . .
 
-EXPOSE 5173
 
 # Paso 4: Comando de inicio
 CMD ["npm", "run", "dev"]
